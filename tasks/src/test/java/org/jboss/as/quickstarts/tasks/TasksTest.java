@@ -1,35 +1,38 @@
 package org.jboss.as.quickstarts.tasks;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
+import javax.persistence.TypedQuery;
+
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import javax.persistence.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @RunWith(Arquillian.class)
 public class TasksTest {
 
     private static long userId;
     private static final String username = "john_doe";
-    private static final String[] taskTitles = new String[]{"task1", "task2", "task3"};
+    private static final String[] taskTitles = new String[] { "task1", "task2", "task3" };
 
     @PersistenceUnit
     private EntityManagerFactory emf;
 
     @Deployment
     public static JavaArchive deployment() {
-        return ShrinkWrap.create(JavaArchive.class, "test.jar")
-                .addPackage(User.class.getPackage())
+        return ShrinkWrap.create(JavaArchive.class, "test.jar").addPackage(User.class.getPackage())
                 .addAsResource("persistence.xml", "META-INF/persistence.xml")
-                .addAsManifestResource(new ByteArrayAsset(new byte[0]), "beans.xml");
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
 
     @Test
@@ -94,10 +97,8 @@ public class TasksTest {
         em.persist(user);
         em.getTransaction().commit();
 
-        List<Task> resultList = em.createQuery(
-                "select t from Task t where t.user = :user", Task.class)
-                .setParameter("user", user)
-                .getResultList();
+        List<Task> resultList = em.createQuery("select t from Task t where t.user = :user", Task.class)
+                .setParameter("user", user).getResultList();
 
         Set<Task> persistedTasks = new HashSet<Task>(resultList);
         Assert.assertEquals(tasks, persistedTasks);
@@ -110,10 +111,7 @@ public class TasksTest {
         EntityManager em = emf.createEntityManager();
         User user = em.find(User.class, userId);
         Task task = em.createQuery("select t from Task t where t.user = :user and t.title = :title", Task.class)
-                .setParameter("user", user)
-                .setParameter("title", taskTitles[0])
-                .getResultList()
-                .get(0);
+                .setParameter("user", user).setParameter("title", taskTitles[0]).getResultList().get(0);
 
         task.setTitle(newTitle);
         em.getTransaction().begin();
@@ -128,8 +126,8 @@ public class TasksTest {
     public void deleteTaskTest() {
         EntityManager em = emf.createEntityManager();
         User user = em.find(User.class, userId);
-        TypedQuery<Task> query =
-                em.createQuery("select t from Task t where t.user = :user", Task.class).setParameter("user", user);
+        TypedQuery<Task> query = em.createQuery("select t from Task t where t.user = :user", Task.class).setParameter("user",
+                user);
 
         List<Task> before = query.getResultList();
         Task toRemove = before.get(0);
