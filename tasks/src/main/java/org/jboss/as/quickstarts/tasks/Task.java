@@ -1,8 +1,11 @@
 package org.jboss.as.quickstarts.tasks;
 
-import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Task implements Serializable {
@@ -16,12 +19,6 @@ public class Task implements Serializable {
     private User user;
 
     private String title;
-
-//    private String description;
-//
-//    private Date due;
-//
-//    private boolean done;
 
     public Long getId() {
         return id;
@@ -46,28 +43,4 @@ public class Task implements Serializable {
     public void setTitle(String title) {
         this.title = title;
     }
-
-//    public String getDescription() {
-//        return description;
-//    }
-//
-//    public void setDescription(String description) {
-//        this.description = description;
-//    }
-//
-//    public Date getDue() {
-//        return due;
-//    }
-//
-//    public void setDue(Date due) {
-//        this.due = due;
-//    }
-//
-//    public boolean isDone() {
-//        return done;
-//    }
-//
-//    public void setDone(boolean done) {
-//        this.done = done;
-//    }
 }
