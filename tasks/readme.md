@@ -1,5 +1,5 @@
-bean-validation
-========================
+jboss-as-tasks
+==============
 
 What is it?
 -----------
